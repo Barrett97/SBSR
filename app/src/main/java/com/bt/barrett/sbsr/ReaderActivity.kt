@@ -1,95 +1,79 @@
-package com.bt.barrett.sbsr;
+package com.bt.barrett.sbsr
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.app.Activity
+import android.os.Bundle
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
+import java.util.*
 
-import java.util.LinkedList;
-import java.util.ListIterator;
+class ReaderActivity : Activity() {
 
-public class ReaderActivity extends Activity {
+    private lateinit var sentence: TextView
+    private var left: Button? = null
+    private var right: Button? = null
+    private var words: LinkedList<String>? = null
+    private var wordCursor: ListIterator<String>? = null
+    private var paragraph: String? = null
 
-    TextView sentence;
-    Button left, right;
-    LinkedList<String> words;
-    ListIterator<String> wordCursor;
-    String paragraph;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.reader);
-
-        Bundle b = getIntent().getExtras();
-        paragraph = b.getString("paragraph");
-
-        initialize();
+    public override fun onCreate(savedInstanceState: Bundle) {
+        super.onCreate(savedInstanceState)
+        this.setContentView(R.layout.reader)
+        val b = intent.extras
+        paragraph = b.getString("paragraph")
+        initialize()
     }
 
-    private void initialize() {
-        sentence = findViewById(R.id.sentence_id);
-        left = findViewById(R.id.leftButtonID);
-        right = findViewById(R.id.rightButtonID);
-
-        words = new LinkedList<>();
-
-        paragraph = paragraph.replaceAll("[\n]+", ".");
-        paragraph = paragraph.replaceAll("\\?", "**Q?");
-        paragraph = paragraph.replaceAll("!", "**E!");
-        paragraph = paragraph.replaceAll("\\.", "**P.");
-
-        String wordArray[] = paragraph.split("[.?!]");
-
-        for (int i = 0; i < wordArray.length; i++) {
-
-            words.addLast(replace(wordArray[i]));
+    private fun initialize() {
+        sentence = findViewById(R.id.sentence_id)
+        left = findViewById(R.id.leftButtonID)
+        right = findViewById(R.id.rightButtonID)
+        words = LinkedList()
+        paragraph = paragraph!!.replace("[\n]+".toRegex(), ".")
+        paragraph = paragraph!!.replace("\\?".toRegex(), "**Q?")
+        paragraph = paragraph!!.replace("!".toRegex(), "**E!")
+        paragraph = paragraph!!.replace("\\.".toRegex(), "**P.")
+        val wordArray = paragraph!!.split("[.?!]").toTypedArray()
+        for (i in wordArray.indices) {
+            words!!.addLast(replace(wordArray[i]))
         }
-
-        wordCursor = words.listIterator();
+        wordCursor = words!!.listIterator()
 
 //        System.out.println(wordArray[0]);
-
-        sentence.setText(wordCursor.next());
-//        left.setVisibility(View.INVISIBLE);
+        sentence.text = (wordCursor as MutableListIterator<String>).next()
+        //        left.setVisibility(View.INVISIBLE);
 //        right.setVisibility(View.INVISIBLE);
     }
 
-    public void onClick(View v) {
-        if (v == left) {
-            if (wordCursor.hasPrevious())
-                sentence.setText(wordCursor.previous());
-//            System.out.println("left");
-        } else if (v == right) {
-            if (wordCursor.hasNext())
-                sentence.setText(wordCursor.next());
-//            System.out.println("right");
+    fun onClick(v: View) {
+        if (v === left) {
+            if (wordCursor!!.hasPrevious()) {
+                sentence!!.text = wordCursor!!.previous()
+            }
+            //            System.out.println("left");
+        } else if (v === right) {
+            if (wordCursor!!.hasNext()) sentence!!.text = wordCursor!!.next()
+            //            System.out.println("right");
         }
     }
 
     /*
     *
     * */
-    public void next(View v) {
-        if (wordCursor.hasNext())
-            sentence.setText(wordCursor.next());
-//        wordCursor.next();
+    fun next(v: View?) {
+        if (wordCursor!!.hasNext()) sentence!!.text = wordCursor!!.next()
+        //        wordCursor.next();
     }
 
-    public void previous(View v) {
-        if (wordCursor.hasPrevious())
-            sentence.setText(wordCursor.previous());
-//        wordCursor.previous();
+    fun previous(v: View?) {
+        if (wordCursor!!.hasPrevious()) sentence!!.text = wordCursor!!.previous()
+        //        wordCursor.previous();
     }
 
-    private String replace(String s) {
-
-        String fixedString = s.replaceAll("\\*\\*Q", "?");
-        fixedString = fixedString.replaceAll("\\*\\*E", "!");
-        fixedString = fixedString.replaceAll("\\*\\*P", ".");
-
-        return fixedString;
+    private fun replace(s: String): String {
+        var fixedString = s.replace("\\*\\*Q".toRegex(), "?")
+        fixedString = fixedString.replace("\\*\\*E".toRegex(), "!")
+        fixedString = fixedString.replace("\\*\\*P".toRegex(), ".")
+        return fixedString
     }
-
 }
