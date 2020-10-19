@@ -1,46 +1,32 @@
-package com.bt.barrett.sbsr;
+package com.bt.barrett.sbsr
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import kotlinx.android.synthetic.main.setup.*
+import kotlin.text.Typography.paragraph
 
 /*
 * Setup for reading environment. Paste paragraph or upload document.
 * */
-public class ReaderSetup extends Activity {
+class ReaderSetup : Activity() {
 
-    TextView title;
-    EditText paragraph; // For pasting text
-    Button parse;
+    public override fun onCreate(savedInstanceState: Bundle) {
+        super.onCreate(savedInstanceState)
+        this.setContentView(R.layout.setup)
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.setup);
-
-        initialize();
     }
 
-    public void initialize() {
-        title = findViewById(R.id.title_id);
-        paragraph = findViewById(R.id.edit_id);
-        parse = findViewById(R.id.parse_id);
-    }
-
-    public void onClick(View v) {
-        if (v == parse) {
+    fun onClick(v: View) {
+        if (v === parseButton) {
 //            String s = paragraph.getText().toString();
 //            System.out.println(paragraph.getText().toString());
-            Bundle b = new Bundle();
-            b.putString("paragraph", paragraph.getText().toString());
-            Intent i = new Intent(getApplicationContext(), ReaderActivity.class);
-            i.putExtras(b);
-            this.startActivity(i);
+            val b = Bundle()
+            b.putString("paragraph", paragraph!!.toString())
+            val i = Intent(applicationContext, ReaderActivity::class.java)
+            i.putExtras(b)
+            this.startActivity(i)
         }
     }
-
 }
