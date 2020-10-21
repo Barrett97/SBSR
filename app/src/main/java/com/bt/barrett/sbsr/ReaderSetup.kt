@@ -15,7 +15,6 @@ class ReaderSetup : Activity() {
     public override fun onCreate(savedInstanceState: Bundle) {
         super.onCreate(savedInstanceState)
         this.setContentView(R.layout.setup)
-
     }
 
     fun onClick(v: View) {
@@ -23,7 +22,7 @@ class ReaderSetup : Activity() {
 //            String s = paragraph.getText().toString();
 //            System.out.println(paragraph.getText().toString());
             val b = Bundle()
-            b.putString("paragraph", paragraph!!.toString())
+            b.putString("paragraph", paragraph.toString().trim())
             val i = Intent(applicationContext, ReaderActivity::class.java)
             i.putExtras(b)
             this.startActivity(i)
